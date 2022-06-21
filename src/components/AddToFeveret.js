@@ -3,48 +3,51 @@ import axios from 'axios';
 
 export default class
     extends Component {
-        constructor() {
-            super();
-            this.state = {
-                movies: [],
-                genrs:[],
-            }
+    constructor() {
+        super();
+        this.state = {
+            movies: [],
+            genrs: [],
+            cGenr: "All Details"
         }
-        async componentDidMount() {
-            const data = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=8c9dc1863ffa6ebb2dbcbbbbb739f9d1&page=${this.state.page}`, (data) => {
-                return data;
-            })
-    
-            this.setState({ movies: [...data.data.results] })
+    }
+    async componentDidMount() {
+        const data = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=8c9dc1863ffa6ebb2dbcbbbbb739f9d1&page=${this.state.page}`, (data) => {
+            return data;
+        })
+        console.log(data.data.results);
+        this.setState({ movies: [...data.data.results] })
 
-            const genrs = await axios.get('https://api.themoviedb.org/3/genre/movie/list?api_key=8c9dc1863ffa6ebb2dbcbbbbb739f9d1&language=en-US',(genr)=>{
-                return genr;
-            })
-            console.log(genrs);
-            this.setState({genrs:[...genrs.data.genres]})
-        }
+        const genrs = await axios.get('https://api.themoviedb.org/3/genre/movie/list?api_key=8c9dc1863ffa6ebb2dbcbbbbb739f9d1&language=en-US', (genr) => {
+            return genr;
+        })
+        
+        this.setState({ genrs: [...genrs.data.genres] })
+    }
     render() {
-        function isPresent(arr,string){
-            arr.forEach((elm)=>{
-                if (elm == string) {
-                    
-                    return false
+        function isPresent(arr, string) {
+            let count = 0;
+            arr.forEach((elm) => {
+                if (elm.name == string) {
+                    count++;
+                    return count
                 }
             })
-            return string;
+            return count;
         }
-        let temp =[];
+        let temp = [];
         this.state.movies.forEach(mobj => {
-            this.state.genrs.forEach(genr=>{
-                if (mobj.genre_ids[0] ==  genr.id) {
-                    // console.log(mobj.genre_ids[0]+ "fdsfsd"+genr.id);
-                    let ispresent = isPresent(temp,genr.name)
+            this.state.genrs.forEach(genr => {
+                if (mobj.genre_ids[0] == genr.id) {
                     
-                        temp.push(ispresent);
+                    let ispresent = isPresent(temp, genr.name)
+                    if (ispresent == 0) {
+                        temp.push(genr);
+                    }
                 }
             })
         });
-        
+        temp.unshift({name:"All Details"});
         console.log(temp);
         return (
             <div>
@@ -53,11 +56,13 @@ export default class
                         <div class="col-3">
                             <ul class="list-group">
                                 {
-                                    this.state.genrs.map((obj)=>(
-                                        <li class="list-group-item">{obj.name}</li>
+                                    temp.map((obj) => (
+                                        this.state.cGenr == obj[0] ?
+                                            <li class="list-group-item" style={{ backgroundColor: "#212529", color: '#fff' }}>{obj.name}</li> :
+                                            <li class="list-group-item">{obj.name}</li>
                                     ))
                                 }
-                                
+
                             </ul>
                         </div>
                         <div class="col overflow-auto h-100">
@@ -87,15 +92,24 @@ export default class
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <th scope="row">1</th>
-                                                <td>Mark</td>
-                                                <td>Otto</td>
-                                                <td>@mdo</td>
-                                                <td>@mdo</td>
-                                                <td><button type="button" class="btn btn-danger">Delete</button></td>
-                                            </tr>
-                                            
+                                            {
+                                                this.state.movies.map((movieobj) => (
+                                                   
+                                                    <tr>
+                                                        <th scope="row">1</th>
+                                                        <td>{movieobj.original_title}</td>
+                                                        {
+                                                           this.state.genrs.map((obj)=>(
+                                                            obj.id == movieobj.genre_ids[0]?
+                                                            <td>{obj.name}</td>:""
+                                                           ))
+                                                        }
+                                                        <td>{movieobj.popularity}</td>
+                                                        <td>{movieobj.vote_average}</td>
+                                                        <td><button type="button" class="btn btn-danger">Delete</button></td>
+                                                    </tr>
+                                                ))
+                                            }
                                         </tbody>
                                     </table>
                                 </div>

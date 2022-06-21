@@ -18,14 +18,11 @@ export default class AllMovies extends Component {
             return data;
         })
         console.log(data);
-        this.setState({ movies: [...data.data.results] })
-        
+        this.setState({ movies: [...data.data.results] })  
     }
     changePage = async () => {
-
         const data = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=8c9dc1863ffa6ebb2dbcbbbbb739f9d1&page=${this.state.page}`, (data) => {
             return data;
-
         })
         this.setState({ movies: [...data.data.results] })
     }
@@ -36,18 +33,14 @@ export default class AllMovies extends Component {
             temparr.push(index);
         }
         this.setState({ parr: [...temparr], page: this.state.page+1 }, this.changePage)
-        
     }
 
     leftArrow = () => {
-        
         if (this.state.page != 1) {
             this.state.parr.pop(this.state.parr.length-1)
             this.setState({ page: this.state.page-1 }, this.changePage);
         }
     }
-
-
     render() {
         return (
             <div>
