@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import * as Bts from "react-bootstrap";
-
+import { Link } from "react-router-dom";
 
 export class Header extends Component {
   render() {
@@ -9,23 +9,13 @@ export class Header extends Component {
         {[ 'md'].map((expand)=>(
             <Bts.Navbar bg="dark" variant="dark" key={expand} expand={expand} className="mb-3">
             <Bts.Container>
-              <Bts.Navbar.Brand href="#home">React-Bootstrap</Bts.Navbar.Brand>
+              <Link to="/"><Bts.Navbar.Brand >Movie App</Bts.Navbar.Brand></Link>
+              
               <Bts.Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Bts.Navbar.Collapse id="basic-navbar-nav">
                 <Bts.Nav className="me-auto">
-                  <Bts.Nav.Link href="#home">Home</Bts.Nav.Link>
-                  <Bts.Nav.Link href="#link">Link</Bts.Nav.Link>
-                  <Bts.NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                    <Bts.NavDropdown.Item href="#action/3.1">Action</Bts.NavDropdown.Item>
-                    <Bts.NavDropdown.Item href="#action/3.2">
-                      Another action
-                    </Bts.NavDropdown.Item>
-                    <Bts.NavDropdown.Item href="#action/3.3">Something</Bts.NavDropdown.Item>
-                    <Bts.NavDropdown.Divider />
-                    <Bts.NavDropdown.Item href="#action/3.4">
-                      Separated link
-                    </Bts.NavDropdown.Item>
-                  </Bts.NavDropdown>
+                <Bts.Nav.Link ><Link to="allMovies">All Movies</Link></Bts.Nav.Link>
+                  <Bts.Nav.Link><Link to="/feverates">Feverate Movies</Link></Bts.Nav.Link>
                 </Bts.Nav>
                 <Bts.Form className="d-flex">
                   <Bts.Form.Control

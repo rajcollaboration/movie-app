@@ -8,18 +8,46 @@ export default class AllMovies extends Component {
         super();
         this.state = {
             hover: '',
-            parr:[1],
-            page:1,
-            movies:[]
+            parr: [1],
+            page: 1,
+            movies: []
         }
     }
-    async componentDidMount(){
-        const data = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=8c9dc1863ffa6ebb2dbcbbbbb739f9d1&page=${this.state.page}`,(data)=>{
-        return data;
+    async componentDidMount() {
+        const data = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=8c9dc1863ffa6ebb2dbcbbbbb739f9d1&page=${this.state.page}`, (data) => {
+            return data;
         })
-        console.log(data.data.results);
-        this.setState({movies:[...data.data.results]})
+        console.log(data);
+        this.setState({ movies: [...data.data.results] })
+        
     }
+    changePage = async () => {
+
+        const data = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=8c9dc1863ffa6ebb2dbcbbbbb739f9d1&page=${this.state.page}`, (data) => {
+            return data;
+
+        })
+        this.setState({ movies: [...data.data.results] })
+    }
+
+    rightArrow = () => {
+        let temparr = [];
+        for (let index = 1; index <= this.state.parr.length + 1; index++) {
+            temparr.push(index);
+        }
+        this.setState({ parr: [...temparr], page: this.state.page+1 }, this.changePage)
+        
+    }
+
+    leftArrow = () => {
+        
+        if (this.state.page != 1) {
+            this.state.parr.pop(this.state.parr.length-1)
+            this.setState({ page: this.state.page-1 }, this.changePage);
+        }
+    }
+
+
     render() {
         return (
             <div>
@@ -38,27 +66,27 @@ export default class AllMovies extends Component {
                                         <div className='buttnwrpr moreinfo'>
                                             {
                                                 this.state.hover == singleMovie.id &&
-                                                <button type="button" class="btn btn-info">More Info</button>
+                                                <button type="button" className="btn btn-info">More Info</button>
                                             }
                                         </div>
                                     </div>
                                 </div>
                             ))
                         }
-                        <nav aria-label="Page navigation example" className='mt-2 mb-2'  style={{display:'flex',width:'100%',justifyContent:'center'}}>
-                            <ul class="pagination">
-                            <li class="page-item">
-                                    <a className="page-link" href="#" aria-label="Previous">
+                        <nav aria-label="Page navigation example" className='mt-2 mb-2' style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
+                            <ul className="pagination">
+                                <li className="page-item">
+                                    <a className="page-link" aria-label="Previous" onClick={this.leftArrow}>
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
                                 {
-                                    this.state.parr.map((value)=>(
+                                    this.state.parr.map((value, idx) => (
                                         <li className="page-item"><a className="page-link" href="#">{value}</a></li>
                                     ))
                                 }
                                 <li className="page-item">
-                                    <a className="page-link" href="#" aria-label="Next">
+                                    <a className="page-link" aria-label="Next" onClick={this.rightArrow}>
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 </li>
